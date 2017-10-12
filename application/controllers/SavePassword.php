@@ -47,6 +47,47 @@ class SavePassword extends CI_Controller
 
     }
 
+    public function edit(){
+        $obj =  new ServerResponse();
+        if (isset($_POST['token']) && isset($_POST['id'])){
+            $token =  $_POST['token'];
+            $id = $_POST['id'];
+            $this->load->database();
+            $database = $this->db;
+            $user_id = $this->getUserId($database,$token);
+            $select = $database->get_where(SAVE_PASS,array('user_id'=>$user_id));
+            if($select->num_rows() > 0){
+                $data = array();
+                if (isset($_POST['user_name'])){
+                    $data['username'] = $_POST['user_name'];
+                }
+                if (isset($_POST['pass_word'])){
+                    $data['password'] = $_POST['pass_word'];
+                }
+                if (isset($_POST['host'])){
+                    $data['host'] = $_POST['host'];
+                }
+                if (isset($_POST['note'])){
+                    $data['note'] = $_POST['note'];
+                }
+                $database->where('id',$id);
+                $database->update(SAVE_PASS,$data);
+                $obj->code = 100;
+                $obj->message = "Success";
+                echo json_encode($obj);
+
+            }else{
+                $obj->code = 200;
+                $obj->message = "Edit error";
+                echo json_encode($obj);
+            }
+
+        }else{
+            $obj->code = 66;
+            $obj->message = "Params invalidate";
+            echo json_encode($obj);
+        }
+    }
 
     public function getall(){
         $obj =  new ServerResponse();
