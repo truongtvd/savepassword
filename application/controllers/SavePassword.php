@@ -88,6 +88,34 @@ class SavePassword extends CI_Controller
             echo json_encode($obj);
         }
     }
+    public function delete(){
+        $obj =  new ServerResponse();
+        if (isset($_POST['token']) && isset($_POST['id'])){
+            $token =  $_POST['token'];
+            $id = $_POST['id'];
+            $this->load->database();
+            $database = $this->db;
+            $user_id = $this->getUserId($database,$token);
+            $select = $database->get_where(SAVE_PASS,array('user_id'=>$user_id,'id'=>$id));
+            if($select->num_rows() > 0){
+                $database->where('id',$id);
+                $database->delete(SAVE_PASS);
+                $obj->code = 100;
+                $obj->message = "Success";
+                echo json_encode($obj);
+
+            }else{
+                $obj->code = 200;
+                $obj->message = "Delete error";
+                echo json_encode($obj);
+            }
+
+        }else{
+            $obj->code = 66;
+            $obj->message = "Params invalidate";
+            echo json_encode($obj);
+        }
+    }
 
     public function getall(){
         $obj =  new ServerResponse();
