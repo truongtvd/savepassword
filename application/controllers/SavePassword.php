@@ -55,7 +55,7 @@ class SavePassword extends CI_Controller
             $this->load->database();
             $database = $this->db;
             $user_id = $this->getUserId($database,$token);
-            $select = $database->get_where(SAVE_PASS,array('user_id'=>$user_id));
+            $select = $database->get_where(SAVE_PASS,array('user_id'=>$user_id,'id'=>$id));
             if($select->num_rows() > 0){
                 $data = array();
                 if (isset($_POST['user_name'])){
